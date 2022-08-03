@@ -25,7 +25,7 @@ public class BlockChain <T>{
         this.date = new Date();
     }
 
-    public void add(String data) {
+    public void add(T data) {
         final Block block = new Block(data, lastHash(), date.getTime());
         if (mineBlock(getDifficulty(), block)) {
             chain.add(block);
