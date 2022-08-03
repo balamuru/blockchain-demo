@@ -12,8 +12,9 @@ import static com.vgb.blockchain.demo.domain.BlockUtils.mineBlock;
 @ToString
 public class BlockChain <T>{
     private List<Block<T>> chain;
+    private Date date;
     @Getter
-    private int difficulty = 4;
+    private int difficulty;
 
     private BlockChain() {
         this(1);
@@ -21,28 +22,28 @@ public class BlockChain <T>{
     public BlockChain(int difficulty) {
         this.difficulty = difficulty;
         this.chain = new ArrayList<>();
+        this.date = new Date();
     }
 
     public void add(String data) {
-        Block block = new Block(data, lastHash(), new Date().getTime());
-        mineBlock(getDifficulty(), block);
-        chain.add(block);
+        final Block block = new Block(data, lastHash(), date.getTime());
+        if (mineBlock(getDifficulty(), block)) {
+            chain.add(block);
+        } else {
+            System.err.println("TODO: error mining block");
+        }
     }
 
-    private void add(Block block) {
-        this.chain.add(block);
+    public boolean validate() {
+        //TODO
+        throw new UnsupportedOperationException("not yet impl");
     }
 
-
-    public Block lastBlock() {
-        return chain.isEmpty() ? null : getLastBlock();
+    private String lastHash() {
+        return chain.isEmpty() ? null : lastBlock().getHash();
     }
 
-    public String lastHash() {
-        return chain.isEmpty() ? null : getLastBlock().getHash();
-    }
-
-    private Block getLastBlock() {
+    private Block lastBlock() {
         return chain.get(chain.size() - 1);
     }
 
